@@ -53,6 +53,7 @@ MATRIX_WIDTH=64
 MATRIX_HEIGHT=32
 COLORS=1024
 MAX_GENERATIONS=500
+TIMING_ON=True
 
 # --- Drawing setup ---
 matrix = Matrix()
@@ -94,6 +95,8 @@ def get_starting_grid():
     grid_color = random.randint(0,COLORS-1)
     if not grid_color:
 	grid_color = 'multicolor'
+
+    print(f"Starting {name} with color {grid_color}")
     return grid, grid_color
 
 def live_cells(row, col, grid):
@@ -116,9 +119,10 @@ def next_population(g):
     for row in range(0,MATRIX_HEIGHT):
         for col in range(0,MATRIX_WIDTH):
             alive = bool(grid[row][col])
+	    cell_count = live_cells(row, col, g)
             new_grid[row][col] = int(
-                (alive and live_cells(row, col, g) in [2,3]) or
-                (not alive and live_cells(row, col, g) == 3))
+                (alive and cell_count in [2,3]) or
+                (not alive and cell_count == 3))
     return new_grid
 
 def display_grid(grid, grid_color):
@@ -142,7 +146,12 @@ def display_grid(grid, grid_color):
 restart = True
 while True:
     if restart:
+	if TIMING_ON:
+	    tic = time.monotonic_ns()
 	grid, grid_color = get_starting_grid()
+	if TIMING_ON:
+	    toc = time.monotonic_ns()
+	    print(f"{(toc - tic)/1000000000:0.4f} seconds to create starting grid")
 	prev_grid = grid        # detect equilibrium
 	prev_prev_grid = None   # detect simple cycle
 	generation = 0
@@ -150,13 +159,23 @@ while True:
 
     # TODO Check for button presses
 
+    if TIMING_ON:
+	tic = time.monotonic_ns()
     display_grid(grid, grid_color)
+    if TIMING_ON:
+	toc = time.monotonic_ns()
+	print(f"{(toc - tic)/1000000000:0.4f} seconds to display grid")
     if generation == 0:
         time.sleep(5)
 
     prev_prev_grid = prev_grid
     prev_grid = grid
+    if TIMING_ON:
+	tic = time.monotonic_ns()
     grid = next_population(grid)
+    if TIMING_ON:
+	toc = time.monotonic_ns()
+	print(f"{(toc - tic)/1000000000:0.4f} seconds to generate next population")
 
     generation += 1
 
