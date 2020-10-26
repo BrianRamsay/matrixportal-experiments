@@ -11,6 +11,7 @@
 #
 # Use Reset button to start over with a new pattern.
 # TODO Toggle Speed, Color, or pattern with buttons
+# TODO Read new patterns from web url
 #
 #### Details
 #
@@ -25,7 +26,7 @@
 #  - check for an end state (to restart)
 #
 #
-#
+# TODO optimize calculation and speed
 # TODO make grid larger than display to avoid edge artifacts
 # TODO add ability to parse RLE patterns
 # TODO patterns to add
@@ -50,7 +51,7 @@ from adafruit_matrixportal.matrix import Matrix
 
 MATRIX_WIDTH=64
 MATRIX_HEIGHT=32
-COLORS=128
+COLORS=1024
 MAX_GENERATIONS=500
 
 # --- Drawing setup ---
